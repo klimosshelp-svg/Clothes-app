@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html,
+body {
+  background: #ffffff;
+  color: #0a0a0a;
+}
+
+::selection {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+
+@layer components {
+  .container-arwin {
+    @apply mx-auto w-full max-w-6xl px-6;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-primary {
+    @apply btn bg-ink text-white hover:bg-ink-soft active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply btn border border-ink/15 bg-white text-ink hover:border-ink/40;
+  }
+  .btn-ghost {
+    @apply btn text-ink/70 hover:text-ink;
+  }
+
+  .card {
+    @apply rounded-2xl border border-line bg-white;
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-medium uppercase tracking-brand text-ink/50;
+  }
+
+  .shimmer {
+    @apply relative overflow-hidden bg-paper-muted;
+  }
+  .shimmer::after {
+    @apply absolute inset-0 -translate-x-full animate-shimmer;
+    content: '';
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.65),
+      transparent
+    );
+  }
+}
