@@ -145,9 +145,27 @@ SUPABASE_STORAGE_BUCKET=arwin
 On restart, uploads go to Supabase Storage and the gallery reads/writes the
 `generations` table automatically.
 
-> Auth: the browser client is ready in `src/lib/supabase/client.ts`. The MVP
-> does not gate pages behind login; wire `getSupabaseBrowser()` into a sign-in
-> flow and pass `user.id` into the API routes to make galleries per-user.
+### Authentication & per-user galleries
+
+Supabase Auth is fully wired in and activates automatically once the Supabase
+env vars are set:
+
+- **Local mode (no Supabase):** no login required — everything works, the
+  gallery is shared, and `/login` shows an "auth disabled" notice.
+- **Connected mode (Supabase set):** email/password auth via `/login`,
+  session cookies kept fresh by `middleware.ts`, and every generation is tagged
+  with the signed-in `user.id`. The gallery and `POST /api/generate` are
+  gated — a signed-out user sees a sign-in prompt and gets `401` on generate.
+
+Relevant files:
+
+- `middleware.ts` — refreshes the Supabase session on each request (no-op in local mode)
+- `src/lib/supabase/server.ts` — cookie-bound server client (respects RLS)
+- `src/lib/auth.ts` — `getSessionUser()` server helper
+- `src/components/AuthButton.tsx` + `src/app/login/page.tsx` — sign in / up / out
+
+The `generations` table's RLS policies (in `supabase/schema.sql`) already
+restrict rows to their owner.
 
 ---
 

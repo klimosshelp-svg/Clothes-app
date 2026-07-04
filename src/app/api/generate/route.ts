@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getAIProvider } from '@/lib/ai';
 import { createGeneration } from '@/lib/db';
+import { getSessionUser } from '@/lib/auth';
+import { isSupabaseServerConfigured } from '@/lib/config';
 import type { OutputStyle, ClothingCategory } from '@/lib/types';
 
 export const runtime = 'nodejs';
@@ -48,6 +50,15 @@ export async function POST(req: Request) {
       );
     }
 
+    // When Supabase is connected, generations are per-user and require auth.
+    const user = await getSessionUser();
+    if (isSupabaseServerConfigured && !user) {
+      return NextResponse.json(
+        { error: 'Sign in to generate and save results.' },
+        { status: 401 }
+      );
+    }
+
     const provider = getAIProvider();
     const result = await provider.generate({
       clothingImageUrl: clothingUrl,
@@ -59,7 +70,7 @@ export async function POST(req: Request) {
 
     const generation = save
       ? await createGeneration({
-          userId: null,
+          userId: user?.id ?? null,
           style,
           category: category as ClothingCategory | null,
           clothingUrl,

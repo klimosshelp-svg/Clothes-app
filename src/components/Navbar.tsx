@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Logo } from './Logo';
+import { AuthButton } from './AuthButton';
 
 const LINKS = [
   { href: '/upload', label: 'Upload' },
@@ -34,12 +35,15 @@ export function Navbar() {
             </Link>
           ))}
         </div>
-        <Link href="/upload" className="btn-primary hidden md:inline-flex">
-          Start creating
-        </Link>
-        <Link href="/upload" className="btn-primary md:hidden">
-          Start
-        </Link>
+        <div className="flex items-center gap-2">
+          <AuthButton />
+          <Link href="/upload" className="btn-primary hidden md:inline-flex">
+            Start creating
+          </Link>
+          <Link href="/upload" className="btn-primary md:hidden">
+            Start
+          </Link>
+        </div>
       </nav>
     </header>
   );
